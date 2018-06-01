@@ -3,7 +3,7 @@ chardet==3.0.4
 Cython==0.28.3
 future==0.16.0
 getch==1.0
--e git+https://github.com/Ven7u/reinforcement-ai.git@302854e9a2cff096fde814f2fd935d3a792de244#egg=gym&subdirectory=gym
+gym
 idna==2.6
 mkl-fft==1.0.0
 mkl-random==1.0.1
