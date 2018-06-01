@@ -1,6 +1,3 @@
-"""
-The expert recorder.
-"""
 import argparse
 import getch
 import random
@@ -9,12 +6,32 @@ import gym.spaces
 import numpy as np
 import time
 import os
+import sys, termios, tty, os, time
+
 
 BINDINGS = {
-    'a': 0,
-    'd': 2}
+    'w': 1,
+    'd': 2,
+    'a': 3,
+    's': 4,
+    # '5': 5,
+    # '6': 6,
+    # '7': 7,
+    # '8': 8,
+}
 SHARD_SIZE = 2000
 
+
+def getch():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
 
 def get_options():
     parser = argparse.ArgumentParser(description='Records an aexpert..')
@@ -34,7 +51,8 @@ def run_recorder(opts):
 
     record_history = []  # The state action history buffer.
 
-    env = gym.make('MountainCar-v0')
+    env = gym.make('MsPacman-ram-v0')
+    print(env.unwrapped.get_action_meanings())
     env._max_episode_steps = 1200
 
     ##############
@@ -58,7 +76,7 @@ def run_recorder(opts):
             # Take the current action if a key is pressed.
             action = None
             while action is None:
-                keys_pressed = getch.getch()
+                keys_pressed = getch()
 
                 if keys_pressed is '+':
                     esc = True
@@ -74,6 +92,7 @@ def run_recorder(opts):
 
             obs, reward, done, info = env.step(action)
             print(obs)
+
             no_action = False
             sarsa = (_last_obs, action)
             _last_obs = obs
